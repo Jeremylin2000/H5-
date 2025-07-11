@@ -5,8 +5,7 @@ import { ref, onMounted } from 'vue';
 
 onMounted(() => {
     init()
-    console.log('测试');
-    
+    console.log('初始化项目');
 })
 console.log('你好啊');
 // 地图实例
@@ -87,7 +86,6 @@ const selectLocation = (item) => {
     showResultList.value = false;
 };
 </script>
-
 <template>
     <div class="map-container">
         <!-- 搜索框 -->

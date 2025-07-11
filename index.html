@@ -6,8 +6,12 @@
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Vite + Vue</title>
-  <script
-    src="https://webapi.amap.com/maps?v=2.0&key=e94545cd2d3d863ae0415cb23f2a44cf&plugin=AMap.PlaceSearch,AMap.AutoComplete&securityJsCode=6454679944e3020f24a8cbaddd10c971"></script>
+  <script>
+    window._AMapSecurityConfig = {
+      securityJsCode: "6454679944e3020f24a8cbaddd10c971",
+    };
+  </script>
+  <script src="https://webapi.amap.com/maps?v=2.0&key=e94545cd2d3d863ae0415cb23f2a44cf"></script>
   <script src="https://webapi.amap.com/ui/1.1/main.js"></script>
 </head>
 
