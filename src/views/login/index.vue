@@ -4,6 +4,9 @@ import { useRoute } from 'vue-router'
 import { showToast } from 'vant'
 import { userLogin, userVercode } from '@/api/index'
 import emitter from '@/utils/mitt.js'
+import { useUserStore } from '@/store/useUser.js'
+
+const userStore = useUserStore()
 
 let mobile = ref('')
 let password = ref('')
@@ -17,9 +20,14 @@ onMounted(() => {
     emitter.on('toLogin', (payload) => {
         show.value = payload.show
         console.log(payload, 'toLogin');
-
     })
 })
+
+// 关闭登录弹窗
+const closeLogin = () => {
+    show.value = false
+}
+
 // 切换验证码登录
 const changeVercode = async () => {
     vercodeShow.value = !vercodeShow.value
@@ -32,6 +40,7 @@ const changeVercode = async () => {
     }
     console.log('切换验证码登录:', vercodeShow.value);
 }
+
 // 发送验证码
 const sendVercode = async () => {
     if (!mobile.value) {
@@ -46,32 +55,62 @@ const sendVercode = async () => {
     disVercode.value = true // 禁用按钮
     sendVerText.value = false // 显示倒计时
 }
+
 // 倒计时结束
 const onFinish = () => {
     sendVerText.value = true // 恢复按钮文本
     disVercode.value = false // 启用按钮
 }
+
 const onSubmit = async () => {
-    if (!mobile.value || !password.value) {
+    if (!mobile.value || (!password.value && !vercode.value)) {
+        showToast({ type: 'fail', message: '请填写完整信息', duration: 1000 })
         return
     }
+    
     // 这里可以添加登录逻辑
     try {
-        const res = await userLogin(mobile.value, password.value)
-        console.log(res, 'hhh');
-        // if(!res.data)
+        const res = await userLogin(mobile.value, password.value || vercode.value)
+        console.log(res, '登录响应');
+        
+        if (res.data && res.data.success) {
+            // 登录成功，存储用户数据
+            const loginData = {
+                user: {
+                    id: res.data.userId || Date.now(),
+                    username: res.data.username || mobile.value,
+                    mobile: mobile.value,
+                    avatar: res.data.avatar || '',
+                    // 可以根据实际接口返回的数据结构调整
+                    ...res.data.userInfo
+                },
+                accessToken: res.data.token || res.data.accessToken || 'mock-token-' + Date.now()
+            }
+            
+            // 使用 useUser store 存储登录数据
+            userStore.login(loginData)
+            
+            showToast({ type: 'success', message: '登录成功', duration: 1000 })
+            
+            // 关闭登录弹窗
+            setTimeout(() => {
+                closeLogin()
+            }, 1000)
+            
+        } else {
+            showToast({ type: 'fail', message: res.data?.message || '登录失败', duration: 1000 })
+        }
     } catch (error) {
         console.error('登录失败:', error.response)
-        showToast({ type: 'fail', message: error.response.data.msg, duration: 1000 })
+        showToast({ type: 'fail', message: error.response?.data?.msg || '登录失败，请重试', duration: 1000 })
         return
     }
-    console.log('登录信息:', mobile.value, password.value);
 }
 </script>
 
 <template>
     <van-popup v-model:show="show" :style="{ width: '100vw', height: '100vh' }" class="login-popup"
-        close-icon-position="top-left" closeable>
+        close-icon-position="top-left" closeable @close="closeLogin">
         <div class="loginContent">
             <div class="tips">
                 <div class="tipsone">登录后更精彩</div>

@@ -53,3 +53,14 @@ export function userVercode(mobile) {
     }
   })
 }
+
+export function userLoginByVercode(mobile, vercode) {
+  return http({
+    url: 'login_by_vercode',
+    method: 'POST',
+    data: {
+      mobile: mobile,
+      vercode: vercode
+    }
+  })
+}

@@ -30,8 +30,6 @@ const init = () => {
 }
 // 搜索地点
 const onSearch = () => {
-    console.log('gggggggggg', AMap);
-
     if (!searchText.value.trim()) return;
 
     AMap.plugin('AMap.PlaceSearch', () => {
@@ -41,11 +39,6 @@ const onSearch = () => {
             city: '全国'
         });
         placeSearch.search(searchText.value, (status, result) => {
-            console.log('status:', status);
-            console.log('result:', result);
-            if (result && result.info) {
-                console.log('info:', result.info); // 这里会有详细的错误描述
-            }
             if (status === 'complete' && result.poiList) {
                 searchResults.value = result.poiList.pois;
                 showResultList.value = true;
@@ -97,9 +90,8 @@ const selectLocation = (item) => {
 
         <!-- 地图容器 -->
         <div id="map-container"></div>
-
         <!-- 搜索结果列表 -->
-        <van-popup v-model="showResultList" position="bottom">
+        <van-popup v-model:show="showResultList" position="bottom" class="popupClass">
             <van-list>
                 <van-cell v-for="(item, index) in searchResults" :key="index" :title="item.name" :label="item.address"
                     @click="selectLocation(item)" />
@@ -121,7 +113,8 @@ const selectLocation = (item) => {
     height: calc(100% - 100px);
 }
 
-.van-popup {
-    height: 50%;
+.popupClass {
+    height: 50vh !important;
+    max-height: 60vh;
 }
 </style>
