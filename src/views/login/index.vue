@@ -2,7 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { showToast } from 'vant'
-import { userLogin, userVercode } from '@/api/index'
+import { userLogin, userVercode, userLoginByVercode } from '@/api/index'
 import emitter from '@/utils/mitt.js'
 import { useUserStore } from '@/store/useUser.js'
 
@@ -66,6 +66,11 @@ const onSubmit = async () => {
     if (!mobile.value || (!password.value && !vercode.value)) {
         showToast({ type: 'fail', message: '请填写完整信息', duration: 1000 })
         return
+    }
+    if(password.value) {
+        const res = userLogin(mobile.value, password.value)
+    } else {
+        const res = userLoginByVercode(mobile.value, vercode.value)
     }
     
     // 这里可以添加登录逻辑

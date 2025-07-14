@@ -1,11 +1,11 @@
 name: Deployment Pipeline
 
-on:  # 触发条件
+on:
   push:
-    branches: [main]  # 推送到 main 分支时触发
-    tags: ["*"]       # 推送任何 tag 时触发（可选）
+    branches: [main]
+    tags: ["*"]
   pull_request:
-    branches: [main]  # 针对 main 分支的 PR 时触发
+    branches: [main]
 
 jobs:
   build:
@@ -13,12 +13,32 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "20.8.1"
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install Dependencies
         run: npm install
+
+      - name: Run Tests
+        run: npm test
+
       - name: Build NodeProject
         run: npm run build
-      
+
+      # 可选：上传构建产物
+      # - name: Upload Build Artifacts
+      #   uses: actions/upload-artifact@v3
+      #   with:
+      #     name: dist
+      #     path: dist/
