@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "packageManager": "yarn@4.9.1",   // ← 这里，和 name、version 同级
   "scripts": {
     "dev": "vite",
     "build": "vite build",
@@ -15,7 +16,6 @@
     "less": "^4.2.0",
     "mitt": "^3.0.1",
     "pinia": "^3.0.3",
-    "packageManager": "yarn@4.9.1",
     "unplugin-auto-import": "^0.16.6",
     "vant": "^4.6.4",
     "vue": "^3.5.11",
@@ -23,9 +23,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
-    "packageManager": "yarn@4.9.1",
     "unplugin-vue-components": "^0.25.1",
     "vite": "^4.4.5"
-  },
-  "packageManager": "yarn@4.9.1+sha512.f95ce356460e05be48d66401c1ae64ef84d163dd689964962c6888a9810865e39097a5e9de748876c2e0bf89b232d583c33982773e9903ae7a76257270986538"
+  }
 }
